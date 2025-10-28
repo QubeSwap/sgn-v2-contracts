@@ -13,7 +13,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     from: deployer,
     log: true,
     args: [
-      process.env.CELR,
+      process.env.XQST,
       process.env.PROPOSAL_DEPOSIT,
       process.env.VOTING_PERIOD,
       process.env.UNBONDING_PERIOD,
@@ -40,7 +40,7 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   await deploy('Govern', {
     from: deployer,
     log: true,
-    args: [staking.address, process.env.CELR, stakingReward.address]
+    args: [staking.address, process.env.XQST, stakingReward.address]
   });
   await deploy('Viewer', {
     from: deployer,

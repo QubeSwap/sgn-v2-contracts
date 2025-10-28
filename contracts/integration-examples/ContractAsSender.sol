@@ -10,7 +10,7 @@ import "../libraries/BridgeTransferLib.sol";
 import "../safeguard/Pauser.sol";
 
 /**
- * @title Example contract to send cBridge transfers. Supports the liquidity pool-based {Bridge}, the {OriginalTokenVault} for pegged
+ * @title Example contract to send QubeBridge transfers. Supports the liquidity pool-based {Bridge}, the {OriginalTokenVault} for pegged
  * deposit and the {PeggedTokenBridge} for pegged burn. Includes handling of refunds for failed transfers.
  * @notice For the bad Bridge.send/PeggedTokenBridge.deposit of native token(eg.ETH) or wrapped native token(eg.WETH),
  * its refund asset depends on whether the nativeWrap of Bridge/PeggedTokenBridge is set or not AT THE MOMENT OF REFUNDING.
@@ -103,8 +103,8 @@ contract ContractAsSender is ReentrancyGuard, Pauser {
 
     /**
      * @notice Send token to user. For native token and wrapped native token, this contract may not have enough _token to
-     * send to _receiver. This may caused by others refund an original transfer that is sent from this contract via cBridge
-     * contract right before you call refund function of this contract and then the nativeWrap of cBridge contract is
+     * send to _receiver. This may caused by others refund an original transfer that is sent from this contract via QubeBridge
+     * contract right before you call refund function of this contract and then the nativeWrap of QubeBridge contract is
      * modified right after that the refund triggered by that guy completes.
      * As a consequence, native token and wrapped native token possessed by this contract are mixed. But don't worry,
      * the total sum of two tokens keeps correct. So in order to avoid deadlocking any token, we'd better have a

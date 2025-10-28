@@ -18,7 +18,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
     using SafeERC20 for IERC20;
     using ECDSA for bytes32;
 
-    IERC20 public immutable CELER_TOKEN;
+    IERC20 public immutable XQUBESWAP_TOKEN;
 
     uint256 public bondedTokens;
     uint256 public nextBondBlock;
@@ -49,7 +49,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
 
     /**
      * @notice Staking constructor
-     * @param _celerTokenAddress address of Celer Token Contract
+     * @param _xqubeswapTokenAddress address of Celer Token Contract
      * @param _proposalDeposit required deposit amount for a governance proposal
      * @param _votingPeriod voting timeout for a governance proposal
      * @param _unbondingPeriod the locking time for funds locked before withdrawn
@@ -61,7 +61,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
      * @param _maxSlashFactor maximal slashing factor (1e6 = 100%)
      */
     constructor(
-        address _celerTokenAddress,
+        address _xqubeswapTokenAddress,
         uint256 _proposalDeposit,
         uint256 _votingPeriod,
         uint256 _unbondingPeriod,
@@ -72,7 +72,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
         uint256 _validatorBondInterval,
         uint256 _maxSlashFactor
     ) {
-        CELER_TOKEN = IERC20(_celerTokenAddress);
+        XQUBESWAP_TOKEN = IERC20(_xqubeswapTokenAddress);
 
         params[dt.ParamName.ProposalDeposit] = _proposalDeposit;
         params[dt.ParamName.VotingPeriod] = _votingPeriod;
@@ -201,14 +201,14 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
     }
 
     /**
-     * @notice Delegate CELR tokens to a validator
-     * @dev Minimal amount per delegate operation is 1 CELR
+     * @notice Delegate XQST tokens to a validator
+     * @dev Minimal amount per delegate operation is 1 XQST
      * @param _valAddr validator to delegate
-     * @param _tokens the amount of delegated CELR tokens
+     * @param _tokens the amount of delegated XQST tokens
      */
     function delegate(address _valAddr, uint256 _tokens) public whenNotPaused {
         address delAddr = msg.sender;
-        require(_tokens >= dt.CELR_DECIMAL, "Minimal amount is 1 CELR");
+        require(_tokens >= dt.XQST_DECIMAL, "Minimal amount is 1 XQST");
 
         dt.Validator storage validator = validators[_valAddr];
         require(validator.status != dt.ValidatorStatus.Null, "Validator is not initialized");
@@ -222,7 +222,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
             bondedTokens += _tokens;
             _decentralizationCheck(validator.tokens);
         }
-        CELER_TOKEN.safeTransferFrom(delAddr, address(this), _tokens);
+        XQUBESWAP_TOKEN.safeTransferFrom(delAddr, address(this), _tokens);
         emit DelegationUpdate(_valAddr, delAddr, validator.tokens, delegator.shares, int256(_tokens));
     }
 
@@ -233,7 +233,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
      * @param _shares undelegate shares
      */
     function undelegateShares(address _valAddr, uint256 _shares) external {
-        require(_shares >= dt.CELR_DECIMAL, "Minimal amount is 1 share");
+        require(_shares >= dt.XQST_DECIMAL, "Minimal amount is 1 share");
         dt.Validator storage validator = validators[_valAddr];
         require(validator.status != dt.ValidatorStatus.Null, "Validator is not initialized");
         uint256 tokens = _shareToToken(_shares, validator.tokens, validator.shares);
@@ -247,7 +247,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
      * @param _tokens undelegate tokens
      */
     function undelegateTokens(address _valAddr, uint256 _tokens) external {
-        require(_tokens >= dt.CELR_DECIMAL, "Minimal amount is 1 CELR");
+        require(_tokens >= dt.XQST_DECIMAL, "Minimal amount is 1 XQST");
         dt.Validator storage validator = validators[_valAddr];
         require(validator.status != dt.ValidatorStatus.Null, "Validator is not initialized");
         uint256 shares = _tokenToShare(_tokens, validator.tokens, validator.shares);
@@ -285,7 +285,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
         uint256 tokens = _shareToToken(undelegationShares, validator.undelegationTokens, validator.undelegationShares);
         validator.undelegationShares -= undelegationShares;
         validator.undelegationTokens -= tokens;
-        CELER_TOKEN.safeTransfer(delAddr, tokens);
+        XQUBESWAP_TOKEN.safeTransfer(delAddr, tokens);
         emit Undelegated(_valAddr, delAddr, tokens);
     }
 
@@ -370,10 +370,10 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
             if (collector.amount > 0) {
                 collectAmt += collector.amount;
                 if (collector.account == address(0)) {
-                    CELER_TOKEN.safeTransfer(msg.sender, collector.amount);
+                    XQUBESWAP_TOKEN.safeTransfer(msg.sender, collector.amount);
                     emit SlashAmtCollected(msg.sender, collector.amount);
                 } else {
-                    CELER_TOKEN.safeTransfer(collector.account, collector.amount);
+                    XQUBESWAP_TOKEN.safeTransfer(collector.account, collector.amount);
                     emit SlashAmtCollected(collector.account, collector.amount);
                 }
             }
@@ -384,7 +384,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
 
     function collectForfeiture() external {
         require(forfeiture > 0, "Nothing to collect");
-        CELER_TOKEN.safeTransfer(rewardContract, forfeiture);
+        XQUBESWAP_TOKEN.safeTransfer(rewardContract, forfeiture);
         forfeiture = 0;
     }
 
@@ -430,7 +430,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
      * @param _amount drained token amount
      */
     function drainToken(uint256 _amount) external whenPaused onlyOwner {
-        CELER_TOKEN.safeTransfer(msg.sender, _amount);
+        XQUBESWAP_TOKEN.safeTransfer(msg.sender, _amount);
     }
 
     /**************************
@@ -635,10 +635,10 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
             validator.shares -= delegator.shares;
             delegator.shares = 0;
         }
-        require(delegator.shares == 0 || delegator.shares >= dt.CELR_DECIMAL, "not enough remaining shares");
+        require(delegator.shares == 0 || delegator.shares >= dt.XQST_DECIMAL, "not enough remaining shares");
 
         if (validator.status == dt.ValidatorStatus.Unbonded) {
-            CELER_TOKEN.safeTransfer(delAddr, _tokens);
+            XQUBESWAP_TOKEN.safeTransfer(delAddr, _tokens);
             emit Undelegated(_valAddr, delAddr, _tokens);
             return;
         } else if (validator.status == dt.ValidatorStatus.Bonded) {

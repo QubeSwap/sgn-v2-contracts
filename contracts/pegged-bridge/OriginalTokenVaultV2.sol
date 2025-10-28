@@ -183,7 +183,7 @@ contract OriginalTokenVaultV2 is ReentrancyGuard, Pauser, VolumeControl, Delayed
         return wdId;
     }
 
-    function executeDelayedTransfer(bytes32 id) external whenNotPaused {
+    function executeDelayedTransfer(bytes32 id) external nonReentrant whenNotPaused {
         delayedTransfer memory transfer = _executeDelayedTransfer(id);
         _sendToken(transfer.receiver, transfer.token, transfer.amount);
     }

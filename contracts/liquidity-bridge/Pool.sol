@@ -89,7 +89,7 @@ contract Pool is Signers, ReentrancyGuard, Pauser, VolumeControl, DelayedTransfe
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external whenNotPaused {
+    ) external nonReentrant whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "WithdrawMsg"));
         verifySigs(abi.encodePacked(domain, _wdmsg), _sigs, _signers, _powers);
         // decode and check wdmsg

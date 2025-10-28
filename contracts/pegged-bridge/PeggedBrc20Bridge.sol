@@ -2,6 +2,7 @@
 
 pragma solidity 0.8.17;
 
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../interfaces/IPeggedToken.sol";
 import "../interfaces/IPeggedTokenBurnFrom.sol";
 import "../safeguard/Pauser.sol";
@@ -11,7 +12,7 @@ import "../safeguard/DelayedTransfer.sol";
 /**
  * @title The bridge contract to mint and burn pegged brc20 tokens
  */
-contract PeggedBrc20Bridge is Pauser, VolumeControl, DelayedTransfer {
+contract PeggedBrc20Bridge is ReentrancyGuard, Pauser, VolumeControl, DelayedTransfer {
     address public minter;
 
     mapping(bytes32 => bool) public records;
@@ -151,7 +152,7 @@ contract PeggedBrc20Bridge is Pauser, VolumeControl, DelayedTransfer {
         return burnId;
     }
 
-    function executeDelayedTransfer(bytes32 id) external whenNotPaused {
+    function executeDelayedTransfer(bytes32 id) external nonReentrant whenNotPaused {
         delayedTransfer memory transfer = _executeDelayedTransfer(id);
         IPeggedToken(transfer.token).mint(transfer.receiver, transfer.amount);
     }

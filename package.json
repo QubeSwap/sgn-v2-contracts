@@ -3,8 +3,9 @@
   "version": "0.2.0",
   "description": "SGN V2 Contracts",
   "scripts": {
-    "clean": "hardhat clean",
+    "cleanup": "hardhat clean",
     "compile": "hardhat compile",
+	"clean": "rm -rf node_modules rm -rf .next",
     "generate:typechain": "rm -rf typechain && hardhat typechain",
     "report-gas:summary": "REPORT_GAS=true hardhat test",
     "report-gas:benchmark": "hardhat test benchmark/*.ts",
@@ -13,13 +14,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/celer-network/sgn-v2-contracts.git"
+    "url": "git+https://github.com/qubeswap/sgn-v2-contracts.git"
   },
   "license": "GPL-3.0",
   "bugs": {
-    "url": "https://github.com/celer-network/sgn-v2-contracts/issues"
+    "url": "https://github.com/qubeswap/sgn-v2-contracts/issues"
   },
-  "homepage": "https://github.com/celer-network/sgn-v2-contracts#readme",
+  "homepage": "https://github.com/qubeswap/sgn-v2-contracts#readme",
   "devDependencies": {
     "@aws-sdk/client-kms": "^3.606.0",
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.7",
@@ -28,7 +29,6 @@
     "@nomicfoundation/hardhat-network-helpers": "^1.0.11",
     "@nomicfoundation/hardhat-toolbox": "^5.0.0",
     "@nomicfoundation/ignition-core": "^0.15.5",
-    "@oasisprotocol/sapphire-hardhat": "^2.19.4",
     "@openzeppelin/contracts": "4.5.0",
     "@openzeppelin/contracts-upgradeable": "4.5.0",
     "@openzeppelin/hardhat-upgrades": "^3.2.0",
@@ -64,9 +64,6 @@
     "typescript": "^5.5.2"
   },
   "dependencies": {
-    "@matterlabs/hardhat-zksync-solc": "^1.2.0",
-    "@matterlabs/hardhat-zksync-upgradable": "^1.5.1",
-    "@matterlabs/hardhat-zksync-verify": "^1.5.0",
     "@nomicfoundation/hardhat-ethers": "^3.0.6",
     "@nomicfoundation/hardhat-verify": "^2.0.8",
     "dotenv": "^16.4.5",

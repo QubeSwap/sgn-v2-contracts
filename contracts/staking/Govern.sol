@@ -14,7 +14,7 @@ contract Govern {
     using SafeERC20 for IERC20;
 
     Staking public immutable staking;
-    IERC20 public immutable celerToken;
+    IERC20 public immutable xqubeswapToken;
 
     enum ProposalStatus {
         Uninitiated,
@@ -58,11 +58,11 @@ contract Govern {
 
     constructor(
         Staking _staking,
-        address _celerTokenAddress,
+        address _xqubeswapTokenAddress,
         address _collector
     ) {
         staking = _staking;
-        celerToken = IERC20(_celerTokenAddress);
+        xqubeswapToken = IERC20(_xqubeswapTokenAddress);
         collector = _collector;
     }
 
@@ -94,7 +94,7 @@ contract Govern {
         p.newValue = _value;
         p.status = ProposalStatus.Voting;
 
-        celerToken.safeTransferFrom(msgSender, address(this), deposit);
+        xqubeswapToken.safeTransferFrom(msgSender, address(this), deposit);
 
         emit CreateParamProposal(nextParamProposalId - 1, msgSender, deposit, p.voteDeadline, _name, _value);
     }
@@ -141,7 +141,7 @@ contract Govern {
         p.status = ProposalStatus.Closed;
         if (passed) {
             staking.setParamValue(p.name, p.newValue);
-            celerToken.safeTransfer(p.proposer, p.deposit);
+            xqubeswapToken.safeTransfer(p.proposer, p.deposit);
         } else {
             forfeiture += p.deposit;
         }
@@ -151,7 +151,7 @@ contract Govern {
 
     function collectForfeiture() external {
         require(forfeiture > 0, "Nothing to collect");
-        celerToken.safeTransfer(collector, forfeiture);
+        xqubeswapToken.safeTransfer(collector, forfeiture);
         forfeiture = 0;
     }
 }

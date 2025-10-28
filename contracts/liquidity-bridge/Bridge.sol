@@ -10,7 +10,7 @@ import "./Pool.sol";
 /**
  * @title The liquidity-pool based bridge.
  */
-contract Bridge is Pool {
+contract QubeBridge is Pool {
     using SafeERC20 for IERC20;
 
     // liquidity events
@@ -127,7 +127,7 @@ contract Bridge is Pool {
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external whenNotPaused {
+    ) external nonReentrant whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Relay"));
         verifySigs(abi.encodePacked(domain, _relayRequest), _sigs, _signers, _powers);
         PbBridge.Relay memory request = PbBridge.decRelay(_relayRequest);

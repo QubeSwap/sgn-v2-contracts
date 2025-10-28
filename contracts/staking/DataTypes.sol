@@ -3,7 +3,7 @@
 pragma solidity 0.8.17;
 
 library DataTypes {
-    uint256 constant CELR_DECIMAL = 1e18;
+    uint256 constant XQST_DECIMAL = 1e18;
     uint256 constant MAX_INT = 2**256 - 1;
     uint256 constant COMMISSION_RATE_BASE = 10000; // 1 commissionRate means 0.01%
     uint256 constant MAX_UNDELEGATION_ENTRIES = 10;
