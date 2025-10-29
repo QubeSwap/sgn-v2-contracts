@@ -14,7 +14,7 @@ contract Govern {
     using SafeERC20 for IERC20;
 
     Staking public immutable staking;
-    IERC20 public immutable xqubeswapToken;
+    IERC20 public immutable xqsToken;
 
     enum ProposalStatus {
         Uninitiated,
@@ -58,11 +58,11 @@ contract Govern {
 
     constructor(
         Staking _staking,
-        address _xqubeswapTokenAddress,
+        address _xqsTokenAddress,
         address _collector
     ) {
         staking = _staking;
-        xqubeswapToken = IERC20(_xqubeswapTokenAddress);
+        xqsToken = IERC20(_xqsTokenAddress);
         collector = _collector;
     }
 
@@ -94,7 +94,7 @@ contract Govern {
         p.newValue = _value;
         p.status = ProposalStatus.Voting;
 
-        xqubeswapToken.safeTransferFrom(msgSender, address(this), deposit);
+        xqsToken.safeTransferFrom(msgSender, address(this), deposit);
 
         emit CreateParamProposal(nextParamProposalId - 1, msgSender, deposit, p.voteDeadline, _name, _value);
     }
@@ -141,7 +141,7 @@ contract Govern {
         p.status = ProposalStatus.Closed;
         if (passed) {
             staking.setParamValue(p.name, p.newValue);
-            xqubeswapToken.safeTransfer(p.proposer, p.deposit);
+            xqsToken.safeTransfer(p.proposer, p.deposit);
         } else {
             forfeiture += p.deposit;
         }
@@ -151,7 +151,7 @@ contract Govern {
 
     function collectForfeiture() external {
         require(forfeiture > 0, "Nothing to collect");
-        xqubeswapToken.safeTransfer(collector, forfeiture);
+        xqsToken.safeTransfer(collector, forfeiture);
         forfeiture = 0;
     }
 }

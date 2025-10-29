@@ -127,7 +127,7 @@ contract QubeBridge is Pool {
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external nonReentrant whenNotPaused {
+    ) external whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Relay"));
         verifySigs(abi.encodePacked(domain, _relayRequest), _sigs, _signers, _powers);
         PbBridge.Relay memory request = PbBridge.decRelay(_relayRequest);

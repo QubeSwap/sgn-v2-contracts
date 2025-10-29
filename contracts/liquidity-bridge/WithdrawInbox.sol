@@ -2,13 +2,12 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../safeguard/Ownable.sol";
 
 /**
  * @title A contract to initiate withdrawal requests for contracts that provide liquidity to {Bridge}.
  */
-contract WithdrawInbox is ReentrancyGuard, Ownable {
+contract WithdrawInbox is Ownable {
     // min allowed max slippage uint32 value is slippage * 1M, eg. 0.5% -> 5000
     uint32 public minimalMaxSlippage;
     // the period of time during which a withdrawal request is intended to be valid
@@ -52,7 +51,7 @@ contract WithdrawInbox is ReentrancyGuard, Ownable {
         address[] calldata _tokens,
         uint32[] calldata _ratios,
         uint32[] calldata _slippages
-    ) external nonReentrant {
+    ) external {
         require(_fromChains.length > 0, "empty withdrawal request");
         require(
             _tokens.length == _fromChains.length &&

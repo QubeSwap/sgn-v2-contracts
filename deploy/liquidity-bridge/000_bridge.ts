@@ -9,13 +9,13 @@ const deployFunc: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
 
-  const bridge = await deploy('QubeBridge', {
+  const bridge = await deploy('Bridge', {
     from: deployer,
     log: true
   });
   await hre.run('verify:verify', { address: bridge.address });
 };
 
-deployFunc.tags = ['QubeBridge'];
+deployFunc.tags = ['Bridge'];
 deployFunc.dependencies = [];
 export default deployFunc;

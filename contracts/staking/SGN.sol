@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import {DataTypes as dt} from "./DataTypes.sol";
 import "../libraries/PbSgn.sol";
 import "../safeguard/Pauser.sol";
@@ -13,7 +12,7 @@ import "./Staking.sol";
 /**
  * @title contract of SGN chain
  */
-contract SGN is ReentrancyGuard, Pauser {
+contract SGN is Pauser {
     using SafeERC20 for IERC20;
 
     Staking public immutable staking;
@@ -40,7 +39,7 @@ contract SGN is ReentrancyGuard, Pauser {
      * @notice Update sgn address
      * @param _sgnAddr the new address in the layer 2 SGN
      */
-    function updateSgnAddr(bytes calldata _sgnAddr) external nonReentrant {
+    function updateSgnAddr(bytes calldata _sgnAddr) external {
         address valAddr = msg.sender;
         if (staking.signerVals(msg.sender) != address(0)) {
             valAddr = staking.signerVals(msg.sender);
@@ -60,7 +59,7 @@ contract SGN is ReentrancyGuard, Pauser {
      * @notice Deposit to SGN
      * @param _amount subscription fee paid along this function call in XQST tokens
      */
-    function deposit(address _token, uint256 _amount) external nonReentrant whenNotPaused {
+    function deposit(address _token, uint256 _amount) external whenNotPaused {
         address msgSender = msg.sender;
         deposits.push(keccak256(abi.encodePacked(msgSender, _token, _amount)));
         IERC20(_token).safeTransferFrom(msgSender, address(this), _amount);
@@ -74,7 +73,7 @@ contract SGN is ReentrancyGuard, Pauser {
      * @param _withdrawalRequest withdrawal request bytes coded in protobuf
      * @param _sigs list of validator signatures
      */
-    function withdraw(bytes calldata _withdrawalRequest, bytes[] calldata _sigs) external nonReentrant whenNotPaused {
+    function withdraw(bytes calldata _withdrawalRequest, bytes[] calldata _sigs) external whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Withdrawal"));
         staking.verifySignatures(abi.encodePacked(domain, _withdrawalRequest), _sigs);
         PbSgn.Withdrawal memory withdrawal = PbSgn.decWithdrawal(_withdrawalRequest);
@@ -92,7 +91,7 @@ contract SGN is ReentrancyGuard, Pauser {
      * @dev emergency use only
      * @param _amount drained token amount
      */
-    function drainToken(address _token, uint256 _amount) external nonReentrant whenPaused onlyOwner {
+    function drainToken(address _token, uint256 _amount) external whenPaused onlyOwner {
         IERC20(_token).safeTransfer(msg.sender, _amount);
     }
 }

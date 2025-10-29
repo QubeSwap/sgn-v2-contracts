@@ -134,7 +134,7 @@ contract OriginalTokenVault is ReentrancyGuard, Pauser, VolumeControl, DelayedTr
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external nonReentrant whenNotPaused {
+    ) external whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Withdraw"));
         sigsVerifier.verifySigs(abi.encodePacked(domain, _request), _sigs, _signers, _powers);
         PbPegged.Withdraw memory request = PbPegged.decWithdraw(_request);
@@ -169,7 +169,7 @@ contract OriginalTokenVault is ReentrancyGuard, Pauser, VolumeControl, DelayedTr
         );
     }
 
-    function executeDelayedTransfer(bytes32 id) external nonReentrant whenNotPaused {
+    function executeDelayedTransfer(bytes32 id) external whenNotPaused {
         delayedTransfer memory transfer = _executeDelayedTransfer(id);
         _sendToken(transfer.receiver, transfer.token, transfer.amount);
     }

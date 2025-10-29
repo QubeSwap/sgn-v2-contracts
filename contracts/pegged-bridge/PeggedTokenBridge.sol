@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../interfaces/ISigsVerifier.sol";
 import "../interfaces/IPeggedToken.sol";
 import "../libraries/PbPegged.sol";
@@ -14,7 +13,7 @@ import "../safeguard/DelayedTransfer.sol";
  * @title The bridge contract to mint and burn pegged tokens
  * @dev Work together with OriginalTokenVault deployed at remote chains.
  */
-contract PeggedTokenBridge is ReentrancyGuard, Pauser, VolumeControl, DelayedTransfer {
+contract PeggedTokenBridge is Pauser, VolumeControl, DelayedTransfer {
     ISigsVerifier public immutable sigsVerifier;
 
     mapping(bytes32 => bool) public records;
@@ -58,7 +57,7 @@ contract PeggedTokenBridge is ReentrancyGuard, Pauser, VolumeControl, DelayedTra
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external nonReentrant whenNotPaused {
+    ) external whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Mint"));
         sigsVerifier.verifySigs(abi.encodePacked(domain, _request), _sigs, _signers, _powers);
         PbPegged.Mint memory request = PbPegged.decMint(_request);
@@ -107,7 +106,7 @@ contract PeggedTokenBridge is ReentrancyGuard, Pauser, VolumeControl, DelayedTra
         uint256 _amount,
         address _withdrawAccount,
         uint64 _nonce
-    ) external nonReentrant whenNotPaused {
+    ) external whenNotPaused {
         require(_amount > minBurn[_token], "amount too small");
         require(maxBurn[_token] == 0 || _amount <= maxBurn[_token], "amount too large");
         bytes32 burnId = keccak256(

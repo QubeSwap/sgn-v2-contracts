@@ -49,7 +49,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
 
     /**
      * @notice Staking constructor
-     * @param _xqubeswapTokenAddress address of Celer Token Contract
+     * @param _xqsTokenAddress address of Celer Token Contract
      * @param _proposalDeposit required deposit amount for a governance proposal
      * @param _votingPeriod voting timeout for a governance proposal
      * @param _unbondingPeriod the locking time for funds locked before withdrawn
@@ -61,7 +61,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
      * @param _maxSlashFactor maximal slashing factor (1e6 = 100%)
      */
     constructor(
-        address _xqubeswapTokenAddress,
+        address _xqsTokenAddress,
         uint256 _proposalDeposit,
         uint256 _votingPeriod,
         uint256 _unbondingPeriod,
@@ -72,7 +72,7 @@ contract Staking is ISigsVerifier, Pauser, Whitelist {
         uint256 _validatorBondInterval,
         uint256 _maxSlashFactor
     ) {
-        XQUBESWAP_TOKEN = IERC20(_xqubeswapTokenAddress);
+        XQUBESWAP_TOKEN = IERC20(_xqsTokenAddress);
 
         params[dt.ParamName.ProposalDeposit] = _proposalDeposit;
         params[dt.ParamName.VotingPeriod] = _votingPeriod;

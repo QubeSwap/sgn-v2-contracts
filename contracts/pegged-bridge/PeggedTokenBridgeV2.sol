@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.17;
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "../interfaces/ISigsVerifier.sol";
 import "../interfaces/IPeggedToken.sol";
 import "../interfaces/IPeggedTokenBurnFrom.sol";
@@ -15,7 +14,7 @@ import "../safeguard/DelayedTransfer.sol";
  * @title The bridge contract to mint and burn pegged tokens
  * @dev Work together with OriginalTokenVault deployed at remote chains.
  */
-contract PeggedTokenBridgeV2 is ReentrancyGuard, Pauser, VolumeControl, DelayedTransfer {
+contract PeggedTokenBridgeV2 is Pauser, VolumeControl, DelayedTransfer {
     ISigsVerifier public immutable sigsVerifier;
 
     mapping(bytes32 => bool) public records;
@@ -69,7 +68,7 @@ contract PeggedTokenBridgeV2 is ReentrancyGuard, Pauser, VolumeControl, DelayedT
         bytes[] calldata _sigs,
         address[] calldata _signers,
         uint256[] calldata _powers
-    ) external nonReentrant whenNotPaused returns (bytes32) {
+    ) external whenNotPaused returns (bytes32) {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "Mint"));
         sigsVerifier.verifySigs(abi.encodePacked(domain, _request), _sigs, _signers, _powers);
         PbPegged.Mint memory request = PbPegged.decMint(_request);
@@ -123,7 +122,7 @@ contract PeggedTokenBridgeV2 is ReentrancyGuard, Pauser, VolumeControl, DelayedT
         uint64 _toChainId,
         address _toAccount,
         uint64 _nonce
-    ) external nonReentrant whenNotPaused returns (bytes32) {
+    ) external whenNotPaused returns (bytes32) {
         bytes32 burnId = _burn(_token, _amount, _toChainId, _toAccount, _nonce);
         IPeggedToken(_token).burn(msg.sender, _amount);
         return burnId;
@@ -136,7 +135,7 @@ contract PeggedTokenBridgeV2 is ReentrancyGuard, Pauser, VolumeControl, DelayedT
         uint64 _toChainId,
         address _toAccount,
         uint64 _nonce
-    ) external nonReentrant whenNotPaused returns (bytes32) {
+    ) external whenNotPaused returns (bytes32) {
         bytes32 burnId = _burn(_token, _amount, _toChainId, _toAccount, _nonce);
         IPeggedTokenBurnFrom(_token).burnFrom(msg.sender, _amount);
         return burnId;
@@ -171,7 +170,7 @@ contract PeggedTokenBridgeV2 is ReentrancyGuard, Pauser, VolumeControl, DelayedT
         return burnId;
     }
 
-    function executeDelayedTransfer(bytes32 id) external nonReentrant whenNotPaused {
+    function executeDelayedTransfer(bytes32 id) external whenNotPaused {
         delayedTransfer memory transfer = _executeDelayedTransfer(id);
         IPeggedToken(transfer.token).mint(transfer.receiver, transfer.amount);
     }

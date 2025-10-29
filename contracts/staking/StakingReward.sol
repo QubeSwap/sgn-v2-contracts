@@ -4,7 +4,6 @@ pragma solidity 0.8.17;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import {DataTypes as dt} from "./DataTypes.sol";
 import "../safeguard/Pauser.sol";
 import "./Staking.sol";
@@ -12,7 +11,7 @@ import "./Staking.sol";
 /**
  * @title A contract to hold and distribute XQST staking rewards.
  */
-contract StakingReward is ReentrancyGuard, Pauser {
+contract StakingReward is Pauser {
     using SafeERC20 for IERC20;
 
     Staking public immutable staking;
@@ -33,7 +32,7 @@ contract StakingReward is ReentrancyGuard, Pauser {
      * @param _rewardRequest reward request bytes coded in protobuf
      * @param _sigs list of validator signatures
      */
-    function claimReward(bytes calldata _rewardRequest, bytes[] calldata _sigs) external nonReentrant whenNotPaused {
+    function claimReward(bytes calldata _rewardRequest, bytes[] calldata _sigs) external whenNotPaused {
         bytes32 domain = keccak256(abi.encodePacked(block.chainid, address(this), "StakingReward"));
         staking.verifySignatures(abi.encodePacked(domain, _rewardRequest), _sigs);
         PbStaking.StakingReward memory reward = PbStaking.decStakingReward(_rewardRequest);
@@ -50,7 +49,7 @@ contract StakingReward is ReentrancyGuard, Pauser {
      * @notice Contribute XQST tokens to the reward pool
      * @param _amount the amount of XQST token to contribute
      */
-    function contributeToRewardPool(uint256 _amount) external nonReentrant whenNotPaused {
+    function contributeToRewardPool(uint256 _amount) external whenNotPaused {
         address contributor = msg.sender;
         IERC20(staking.XQUBESWAP_TOKEN()).safeTransferFrom(contributor, address(this), _amount);
 

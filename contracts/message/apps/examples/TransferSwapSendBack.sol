@@ -25,7 +25,7 @@ contract CrossChainSwap is MessageApp {
         address wantToken; // token user want to receive on dest chain
         address user;
         bool sendBack; // if true, send wantToken back to start chain
-        uint32 cbrMaxSlippage; // _maxSlippage for qubebridge send
+        uint32 cbrMaxSlippage; // _maxSlippage for cbridge send
     }
 
     constructor(address _messageBus, address dex_) MessageApp(_messageBus) {
