@@ -166,31 +166,24 @@ const config: HardhatUserConfig = {
       avalanche: process.env.SNOWTRACE_API_KEY || '',
       bsc: process.env.BSCSCAN_API_KEY || '',
       polygon: process.env.POLYGONSCAN_API_KEY || '',
-      base: process.env.BASE_API_KEY || ''
+      base: process.env.BASESCAN_API_KEY || '',
+	  qubetics: 'empty'
     },
     customChains: [
-      {
-        network: 'arbitrumNova',
-        chainId: 42170,
-        urls: {
-          apiURL: process.env.ARBITRUM_NOVA_ENDPOINT || '',
-          browserURL: process.env.ARBITRUM_NOVA_EXPLORER || ''
-        }
-      },
-      {
-        network: 'linea',
-        chainId: 59144,
-        urls: {
-          apiURL: process.env.LINEA_API_ENDPOINT || '',
-          browserURL: process.env.LINEA_EXPLORER || ''
-        }
-      },
       {
         network: 'base',
         chainId: 8453,
         urls: {
           apiURL: process.env.BASE_API_ENDPOINT || '',
           browserURL: process.env.BASE_EXPLORER || ''
+        }
+      },
+	  {
+        network: "qubetics",
+        chainId: 9030,
+        urls: {
+          apiURL: process.env.QUBETICS_API_ENDPOINT || '',
+          browserURL: process.env.QUBETICS_EXPLORER || ''
         }
       }
     ]
