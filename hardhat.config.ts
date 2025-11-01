@@ -153,24 +153,21 @@ const config: HardhatUserConfig = {
     outDir: 'typechain',
     target: 'ethers-v6'
   },
+  sourcify: {
+	enabled: false
+  },
   etherscan: {
-    apiKey: {
-      // Testnets
-      sepolia: process.env.ETHERSCAN_API_KEY || '',
-      avalancheFujiTestnet: process.env.SNOWTRACE_API_KEY || '',
-      bscTestnet: process.env.BSCSCAN_API_KEY || '',
-      ftmTestnet: process.env.FTMSCAN_API_KEY || '',
-      polygonMumbai: process.env.POLYGONSCAN_API_KEY || '',
-      // Mainnets
-      mainnet: process.env.ETHERSCAN_API_KEY || '',
-      avalanche: process.env.SNOWTRACE_API_KEY || '',
-      bsc: process.env.BSCSCAN_API_KEY || '',
-      polygon: process.env.POLYGONSCAN_API_KEY || '',
-      base: process.env.BASESCAN_API_KEY || '',
-	  qubetics: 'empty'
-    },
+    apiKey: process.env.ETHERSCAN_API_KEY || '',
     customChains: [
       {
+        network: 'bsc',
+        chainId: 56,
+        urls: {
+          apiURL: process.env.BSC_API_ENDPOINT || '',
+          browserURL: process.env.BSC_EXPLORER || ''
+        }
+      },
+	  {
         network: 'base',
         chainId: 8453,
         urls: {
