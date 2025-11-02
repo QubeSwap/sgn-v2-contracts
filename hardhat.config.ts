@@ -121,7 +121,6 @@ const config: HardhatUserConfig = {
     polygon: getNetworkConfig(polygonEndpoint, kmsKeyId, polygonPrivateKey, 50000000000),
     qubetics: getNetworkConfig(qubeticsEndpoint, kmsKeyId, qubeticsPrivateKey),
     avalanche: getNetworkConfig(avalancheEndpoint, kmsKeyId, avalanchePrivateKey),
-    optimism: getNetworkConfig(optimismEndpoint, kmsKeyId, optimismPrivateKey),
 	qubetics: getNetworkConfig(qubeticsEndpoint, kmsKeyId, qubeticsPrivateKey),
     base: getNetworkConfig(baseEndpoint, kmsKeyId, basePrivateKey),
   },
@@ -159,6 +158,14 @@ const config: HardhatUserConfig = {
   etherscan: {
     apiKey: process.env.ETHERSCAN_API_KEY || '',
     customChains: [
+	  {
+        network: 'ethMainnet',
+        chainId: 1,
+        urls: {
+          apiURL: process.env.ETH_API_ENDPOINT || '',
+          browserURL: process.env.ETH_EXPLORER || ''
+        }
+      },
       {
         network: 'bsc',
         chainId: 56,
@@ -173,6 +180,22 @@ const config: HardhatUserConfig = {
         urls: {
           apiURL: process.env.BASE_API_ENDPOINT || '',
           browserURL: process.env.BASE_EXPLORER || ''
+        }
+      },
+	  {
+        network: 'polygon',
+        chainId: 137,
+        urls: {
+          apiURL: process.env.POLYGON_API_ENDPOINT || '',
+          browserURL: process.env.POLYGON_EXPLORER || ''
+        }
+      },
+	  {
+        network: 'avalanche',
+        chainId: 43114,
+        urls: {
+          apiURL: process.env.AVALANCHE_API_ENDPOINT || '',
+          browserURL: process.env.AVALANCHE_EXPLORER || ''
         }
       },
 	  {
